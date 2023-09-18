@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Football Player Search</title>
+</head>
+<body>
+    <h1>Football Player Search</h1>
+    <input type="text" id="searchInput" placeholder="Type a player name">
+    <ul id="searchResults"></ul>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value;
+
+            searchResults.innerHTML = '';
+
+            fetch(`/search?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const results = data.results;
+                    results.forEach(result => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${result.player_name}, Country: ${result.country}, Club: ${result.club}, Rating: ${result.rating}`;
+                        searchResults.appendChild(listItem);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>
