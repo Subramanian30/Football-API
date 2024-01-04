@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Football Player Search</title>
+    <script>
+        window.codySettings = { widget_id: '9a318caa-2442-4d70-b7ee-813179202d97' };
+        
+        !function(){var t=window,e=document,a=function(){var t=e.createElement("script");t.type="text/javascript",t.async=!0,t.src="https://trinketsofcody.com/cody-widget.js";var a=e.getElementsByTagName("script")[0];a.parentNode.insertBefore(t,a)};"complete"===document.readyState?a():t.attachEvent?t.attachEvent("onload",a):t.addEventListener("load",a,!1)}();
+        </script>
+</head>
+<body>
+    <h1>Football Player Search</h1>
+    <!-- <iframe src="https://widget.getcody.ai/9a318caa-2442-4d70-b7ee-813179202d97" style="border:0px;" name="codyai" scrolling="no" frameborder="1" marginheight="0" marginwidth="0" height="800px" width="100%" allowfullscreen></iframe> -->
+    <input type="text" id="searchInput" placeholder="Type a player name">
+    <!-- <a href="https://widget.getcody.ai/9a318caa-2442-4d70-b7ee-813179202d97" >Visit Example.com</a> -->
+
+    <ul id="searchResults"></ul>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value;
+
+            searchResults.innerHTML = '';
+
+            fetch(`/search?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const results = data.results;
+                    results.forEach(result => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${result.player_name}, Country: ${result.country}, Club: ${result.club}, Rating: ${result.rating}`;
+                        searchResults.appendChild(listItem);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>
