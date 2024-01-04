@@ -3,17 +3,11 @@ import sqlite3
 
 app = Flask(__name__)
 
-def fetch_players_data(query=None):
+def fetch_player_data(player_name):
     conn = sqlite3.connect('player_database.db')
     cursor = conn.cursor()
 
-    if query:
-        # cursor.execute("SELECT * FROM Player_API WHERE FullName LIKE ? OR ClubName LIKE ?", (f"%{query}%", f"%{query}%"))
-        cursor.execute("SELECT * FROM Player_API WHERE FullName LIKE ? OR FullName LIKE ?",
-               (f"{query}%", f"% {query}%"))
-
-    else:
-        cursor.execute("SELECT * FROM Player_API")
+    cursor.execute("SELECT * FROM Player_API WHERE FullName LIKE ?", (f"%{player_name}%",))
 
     data = cursor.fetchall()
     conn.close()
@@ -23,20 +17,15 @@ def fetch_players_data(query=None):
 def index():
     return render_template('index.html')
 
-@app.route('/search', methods=['GET'])
-def search():
-    query = request.args.get('query')
-    
-    if not query:
-        return jsonify({"error": "Please provide a query parameter"}), 400
-
+@app.route('/player/<player_name>', methods=['GET'])
+def get_player(player_name):
     results = []
 
-    players_data = fetch_players_data(query)
-    
+    players_data = fetch_player_data(player_name)
+
     for player in players_data:
-        player_name, rating, country, club = player
-        results.append({"player_name": player_name, "country": country, "club": club, "rating": rating})
+        full_name, rating, country, club = player
+        results.append({"full_name": full_name, "country": country, "club": club, "rating": rating})
 
     return jsonify({"results": results})
 
